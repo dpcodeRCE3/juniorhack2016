@@ -1,47 +1,28 @@
-#include <SPI.h>
-#include <Ethernet.h>
- 
-// zde si upravte podle sebe
-byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
- 
-// IP adresa
-IPAddress ip(192,168,0, 150);
-// port
-EthernetServer server(80);
-
-int led = 13;
+int ledPin = 13;
+int fotoPin = A0;
+float pct = 0; //num from 0 to 1
+float light = 0; //light sensor 0 (light) to 500 (dark)
+boolean inc = false;
 
 void setup() {
- // inicalizace sítě
-  Ethernet.begin(mac, ip);
-  // inicializace serveru
-  server.begin();
-  
-  pinMode(led, OUTPUT);
+  pinMode(ledPin, OUTPUT);
+  pinMode(A1, INPUT);
+  Serial.begin(9600);
 }
 
 void loop() {
-  
-  digitalWrite(led, HIGH); 
-  delay(1000);
-  digitalWrite(led, LOW);
-  delay(1000);  
-  
-  /*
-  EthernetClient client = server.available();
-  String buffer = "";
-  while (client.connected()) {
-    if (client.available()) {
-         char c = client.read();
-         buffer = buffer + c;
-         if (c == '\n') {
-          if(buffer.indexOf("params")>=0){
-          
-          }
-          // TO DO SEND RESPONSE
-          client.stop();
-         }
-    }
-  }
-  */
+  //light = analogRead(fotoPin);
+  Serial.println(analogRead(A1)); //nefunkční kabílky?
+  //if(light>550){light=550;}
+  //pct = light/550;
+  //ledOn(pct);
+  //Serial.print(F(" | "));
+  //Serial.println(pct);
+}
+
+void ledOn(float pwd){
+  digitalWrite(13, HIGH);
+  delayMicroseconds(pwd*1500); // Approximately 10% duty cycle @ 1KHz
+  digitalWrite(13, LOW);
+  delayMicroseconds(1500-pwd*1500);
 }
